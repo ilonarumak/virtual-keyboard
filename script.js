@@ -8,6 +8,7 @@ let secondRow = document.createElement('div');
 let thirdRow = document.createElement('div');
 let fourthRow = document.createElement('div');
 let fifthRow = document.createElement('div');
+let description = document.createElement('p');
 
 input.classList.add('input');
 keyboard.classList.add('keyboard');
@@ -54,6 +55,9 @@ down.innerHTML = '↓';
 left.innerHTML = '←';
 right.innerHTML = '→';
 space.innerHTML = 'Space';
+description.innerHTML = 'Клавиатура создана в операционной системе <b>Windows</b>.<br> Переключение языка: <b>Shift + Alt</b>';
+
+keyboard.after(description);
 
 backspace.setAttribute('data', '8');
 del.setAttribute('data', '46');
@@ -85,59 +89,27 @@ down.classList.add('keyboard__arrow');
 left.classList.add('keyboard__arrow');
 right.classList.add('keyboard__arrow');
 
-
-
 let shiftRight = shiftLeft.cloneNode(true);
 let ctrlRight = ctrlLeft.cloneNode(true);
 let altRight = altLeft.cloneNode(true);
 
 /* создание кнопок */
-function init(keyboardCodes) {
-   for (let i = 0; i < 13; i++) {
-      addKeyboardKeys(firstRow, i, keyboardCodes);
+
+let keyboardKeys = (document.cookie == 'language=rus') ? init(keyboardCodesRus) : init(keyboardCodesEng);
+let keyboardLetters = [];
+for (let i = 0; i < keyboardKeys.length; i++) {
+   if (keyboardKeys[i].classList.length < 2) {
+      keyboardLetters.push(keyboardKeys[i]);
    }
-
-   for (let i = 13; i < 26; i++) {
-      addKeyboardKeys(secondRow, i, keyboardCodes);
-   }
-
-   for (let i = 26; i < 37; i++) {
-      addKeyboardKeys(thirdRow, i, keyboardCodes);
-   }
-
-   for (let i = 37; i < keyboardCodes.length; i++) {
-      addKeyboardKeys(fourthRow, i, keyboardCodes);
-   }
-
-   let keyboardKeys = document.querySelectorAll('.keyboard div');
-
-
-   firstRow.append(backspace);
-   secondRow.prepend(tab);
-   secondRow.append(del);
-   thirdRow.prepend(capsLk);
-   thirdRow.append(enter);
-   fourthRow.prepend(shiftLeft);
-   fourthRow.append(up, shiftRight);
-   fifthRow.prepend(ctrlLeft, win, altLeft, space, altRight, left, down, right, ctrlRight);
-
-   keyboardKeys = document.querySelectorAll('.row div');
-
-   keyboardKeys.forEach(elem => {
-      elem.classList.add('keyboard__keys');
-   });
-
-   return keyboardKeys;
-}
-let keyboardKeys = init(keyboardCodesEng);
+};
 
 /* нажатие на кнопку виртуальной клавиатуры */
 
 keyboardKeys.forEach(elem => {
-   elem.onmousedown = function () {
+   elem.addEventListener('mousedown', function () {
       let cursorPos = getCursorPosition(input);
       switch (elem.innerHTML) {
-         case 'space':
+         case 'Space':
             input.innerHTML += ' ';
             break;
          case 'Enter':
@@ -154,7 +126,7 @@ keyboardKeys.forEach(elem => {
             toBackspace(input, cursorPos);
             break;
          case 'CapsLk':
-            keyboardKeys.forEach(elem => {
+            keyboardLetters.forEach(elem => {
                elem.classList.toggle('keyboard__keys_upperCase');
             });
             break;
@@ -172,21 +144,20 @@ keyboardKeys.forEach(elem => {
             }
       }
       toActive(elem);
-   }
-   elem.onmouseup = function () {
+   });
+
+   elem.addEventListener('mouseup', function () {
       elem.classList.remove('keyboard__keys_active');
       cursorPos = getCursorPosition(input);
-   }
+   })
 });
-let a = [];
-
-// document.onkeypress = function (event) {
-//    a.push(event.charCode);
-//    console.log(a);
-// }
 
 /* нажатие на кнопку физической клавиатуры */
+
 document.addEventListener('keydown', function (event) {
+
+   /* подсветка нужной клавиши */
+   
    if (event.which == 16) {
       let shift = (event.location == 1) ? shiftLeft : shiftRight;
       toActive(shift);
@@ -207,6 +178,9 @@ document.addEventListener('keydown', function (event) {
       return;
    }
    toActive(document.querySelector('.keyboard__keys[data="' + event.which + '"]'));
+
+   /* вывод при нажатии клавиши */
+   
    switch (event.which) {
       case 13:
          input.innerHTML += '\r\n';
@@ -219,7 +193,7 @@ document.addEventListener('keydown', function (event) {
          input.innerHTML += ' ';
          break;
       case 20:
-         keyboardKeys.forEach(elem => {
+         keyboardLetters.forEach(elem => {
             elem.classList.toggle('keyboard__keys_upperCase');
          })
          event.preventDefault();
@@ -236,16 +210,49 @@ document.addEventListener('keydown', function (event) {
             input.innerHTML += (document.querySelector('.keyboard__keys[data="' + event.which + '"]').innerHTML).toUpperCase();
          }
    }
-})
+});
 
 document.addEventListener('keyup', function toDeactive() {
    keyboardKeys.forEach(elem => {
       elem.classList.remove('keyboard__keys_active');
-   })
-})
+   });
+});
 
+/* функция создания клавиатуры */
 
+function init(keyboardCodes) {
+   for (let i = 0; i < 13; i++) {
+      addKeyboardKeys(firstRow, i, keyboardCodes);
+   }
+   for (let i = 13; i < 26; i++) {
+      addKeyboardKeys(secondRow, i, keyboardCodes);
+   }
+   for (let i = 26; i < 37; i++) {
+      addKeyboardKeys(thirdRow, i, keyboardCodes);
+   }
+   for (let i = 37; i < keyboardCodes.length; i++) {
+      addKeyboardKeys(fourthRow, i, keyboardCodes);
+   }
 
+   let keyboardKeys = document.querySelectorAll('.keyboard div');
+
+   firstRow.append(backspace);
+   secondRow.prepend(tab);
+   secondRow.append(del);
+   thirdRow.prepend(capsLk);
+   thirdRow.append(enter);
+   fourthRow.prepend(shiftLeft);
+   fourthRow.append(up, shiftRight);
+   fifthRow.prepend(ctrlLeft, win, altLeft, space, altRight, left, down, right, ctrlRight);
+
+   keyboardKeys = document.querySelectorAll('.row div');
+
+   keyboardKeys.forEach(elem => {
+      elem.classList.add('keyboard__keys');
+   });
+
+   return keyboardKeys;
+}
 
 function addKeyboardKeys(row, i, codes) {
    row.innerHTML += '<div data = "' + keyboardWhich[i] + '" >' + String.fromCharCode(codes[i]) + '</div > ';
@@ -255,11 +262,9 @@ function changeKeyboardKeys(elem, codes, i) {
    elem.innerHTML = String.fromCharCode(codes[i]);
 }
 
-
 function toActive(elem) {
    elem.classList.add('keyboard__keys_active');
 }
-
 
 function getCursorPosition(ctrl) {
    var CaretPos = 0;
@@ -273,7 +278,6 @@ function getCursorPosition(ctrl) {
    }
    return CaretPos;
 }
-
 
 function toBackspace(input, cursorPos) {
    let inputValue = input.innerHTML.split('');
@@ -292,29 +296,24 @@ function toDelete(input, cursorPos) {
    input.innerHTML = inputValue.join('');
 }
 
+/* функция переключения языка */
 
 function checkActiveKeys(a, b) {
    if (a.classList.contains('keyboard__keys_active') && b.classList.contains('keyboard__keys_active')) {
-      let elem = document.querySelectorAll('.keyboard__keys');
-      let keys = [];
-      for (let i = 0; i < elem.length; i++) {
-         if (elem[i].classList.length < 2) {
-            keys.push(elem[i]);
-            console.log(keys);
-         };
-      }
-
-
-      keys.forEach(key =>
-         key.classList.remove('keyboard__keys_active'))
-      if (keys[0].innerHTML == '`') {
-         for (let i = 0; i < keys.length; i++) {
-            changeKeyboardKeys(keys[i], keyboardCodesRus, i);
+      keyboardLetters.forEach(key =>
+         key.classList.remove('keyboard__keys_active'));
+      if (keyboardLetters[0].innerHTML == '`') {
+         for (let i = 0; i < keyboardLetters.length; i++) {
+            changeKeyboardKeys(keyboardLetters[i], keyboardCodesRus, i);
+            document.cookie = 'language=rus';
+            console.log(document.cookie);
          }
       }
       else {
-         for (let i = 0; i < keys.length; i++) {
-            changeKeyboardKeys(keys[i], keyboardCodesEng, i);
+         for (let i = 0; i < keyboardLetters.length; i++) {
+            changeKeyboardKeys(keyboardLetters[i], keyboardCodesEng, i);
+            document.cookie = 'language=eng';
+            console.log(document.cookie);
          }
       }
    }

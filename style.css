@@ -2,30 +2,43 @@
    margin: 0;
    padding: 0;
    box-sizing: border-box;
+   font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.input {
+   display: block;
+   width: 1000px;
+   height: 200px;
+   margin: 5% auto 20px;
 }
 
 .keyboard {
-   width: 70%;
+   width: 1000px;
    height: auto;
    padding: 10px;
-   border: 1px solid black;
    margin: auto;
-   text-align: center;
-   /* display: grid;
-   grid-template-rows: repeat(3, 1fr);
-   grid-template-columns: repeat(14, 1fr); */
+   border-radius: 5px;
+   background: #add8e6;
+   animation: background 10s infinite alternate;
 }
 
+.row {
+   display: flex;
+   justify-content: space-between;
+}
 
 .keyboard__keys {
    width: 50px;
-   height: 50px;
+   height: 15%;
    margin: 5px;
    display: inline-block;
    text-align: center;
    line-height: 50px;
-   background-color: lightblue;
    cursor: pointer;
+   border-radius: 5px;
+   background: #fff;
+   transition: all 0.2s;
 }
 
 .keyboard__keys_upperCase {
@@ -37,36 +50,56 @@
 }
 
 .keyboard__space {
-   width: 420px;
+   width: 45%;
 }
 
 .keyboard__backspace {
-   width: 130px;
+   width: 12%;
 }
 
 .keyboard__capslk {
-   width: 110px;
+   width: 10%;
 }
 
 .keyboard__shift {
    width: 120px;
+   position: relative;
+}
+
+.keyboard__shift_up {
+   width: 10px;
+   height: auto;
+   position: absolute;
+   right: 10px;
+   top: 0;
 }
 
 .keyboard__del {
-   width: 70px;
+   width: 6.5%;
 }
 
 .keyboard__enter {
-   width: 130px;
+   width: 12%;
 }
 
 .keyboard__ctrl {
    width: 60px;
 }
 
-.input {
-   display: block;
-   width: 500px;
-   height: 150px;
-   margin: auto;
+@keyframes background {
+   25% {
+      background: #ffe591;
+   }
+   50% {
+      background: pink;
+   }
+   75% {
+      background: lightgreen;
+   }
+}
+
+p {
+   margin-top: 20px;
+   text-align: center;
+   line-height: 30px;
 }
