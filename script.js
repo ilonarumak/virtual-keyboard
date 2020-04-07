@@ -247,22 +247,23 @@ document.addEventListener('keydown', function (event) {
 });
 
 document.addEventListener('keyup', function toDeactive(event) {
-         if (event.key == 'CapsLock') {
-            return;
-         }
-         else if (event.key == 'Shift') {
+   if (event.key == 'CapsLock') {
+      return;
+   }
+   else if (event.key == 'Shift') {
       //       changeFirstRow();
-            shiftLeft.classList.remove('keyboard__keys_active');
-            shiftRight.classList.remove('keyboard__keys_active');
-            keyboardKeysRegular.forEach(key =>
-               key.classList.remove('keyboard__keys_upperCase'));
-         }
-         else {
-            keyboardKeys.forEach(elem => 
-      elem.classList.remove('keyboard__keys_active')
-            )}
-   });
-   // });
+      shiftLeft.classList.remove('keyboard__keys_active');
+      shiftRight.classList.remove('keyboard__keys_active');
+      keyboardKeysRegular.forEach(key =>
+         key.classList.remove('keyboard__keys_upperCase'));
+   }
+   else {
+      keyboardKeys.forEach(elem =>
+         elem.classList.remove('keyboard__keys_active')
+      )
+   }
+});
+// });
 
 /* функция создания клавиатуры */
 
@@ -355,8 +356,6 @@ function toDeactiveByClick(elem) {
             changeFirstRow();
          }
       })
-   toDeactiveShift(shiftLeft, shiftRight);
-   toDeactiveShift(shiftRight, shiftLeft);
 }
 
 function toDeactiveByPress(elem) {
@@ -369,39 +368,6 @@ function toDeactiveByPress(elem) {
       }
    }
 }
-
-function toDeactiveShift(elem1, elem2) {
-   if (elem1.classList.contains('keyboard__keys_active')) {
-      elem2.onclick = () => {
-         elem1.classList.remove('keyboard__keys_active');
-         elem2.classList.remove('keyboard__keys_active');
-      }
-   }
-}
-
-// function getCursorPosition(ctrl) {
-//    let CaretPos = 0;
-//    if (document.selection) {
-//       ctrl.focus();
-//       let Sel = document.selection.createRange();
-//       Sel.moveStart('character', -ctrl.value.length);
-//       CaretPos = Sel.text.length;
-//    } else if (ctrl.selectionStart || ctrl.selectionStart == '0') {
-//       CaretPos = ctrl.selectionStart;
-//    }
-//    return CaretPos;
-// }
-
-// function toBackspace(input, cursorPos) {
-//    let inputValue = input.innerHTML.split('');
-//    if (cursorPos == inputValue.length - 1) {
-//       inputValue.pop();
-//    }
-//    else {
-//       inputValue.splice(cursorPos - 1, 1);
-//    }
-//    input.innerHTML = inputValue.join('');
-// }
 
 function getCaret(el) {
    if (el.selectionStart) {
@@ -445,7 +411,6 @@ function toBackspace() {
    textarea.value = backSpace;
 
    resetCursor(textarea, currentPos - 1);
-
 }
 
 function toDelete(input, cursorPos) {
