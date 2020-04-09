@@ -168,23 +168,17 @@ keyboardKeys.forEach(elem => {
       if (elem == shiftLeft || elem == shiftRight || elem == capsLk || elem == ctrlLeft) {
          return;
       }
-      else {
-         elem.classList.remove('keyboard__keys_active');
-         if (ctrlLeft.classList.contains('keyboard__keys_active') && elem == altLeft) {
-            elem.classList.add('keyboard__keys_active');
-            checkActiveKeys(ctrlLeft, altLeft);
-            keyboardKeys.forEach(key =>
-               key.classList.remove('keyboard__keys_active'));
-         }
+      elem.classList.remove('keyboard__keys_active');
+      if (ctrlLeft.classList.contains('keyboard__keys_active') && elem == altLeft) {
+         elem.classList.add('keyboard__keys_active');
+         checkActiveKeys(ctrlLeft, altLeft);
+         keyboardKeys.forEach(key =>
+            key.classList.remove('keyboard__keys_active'));
       }
    })
 });
 
 /* нажатие на кнопку физической клавиатуры */
-
-document.addEventListener('keypress', function (event) {
-
-})
 
 document.addEventListener('keydown', function (event) {
 
@@ -213,7 +207,7 @@ document.addEventListener('keydown', function (event) {
       checkActiveKeys(ctrlLeft, altLeft);
       return;
    }
-   toActive(document.querySelector('.keyboard__keys[data="' + event.which + '"]'));
+   toActive(document.querySelector(`.keyboard__keys[data='${event.which}']`));
 
    /* вывод при нажатии клавиши */
 
@@ -238,10 +232,10 @@ document.addEventListener('keydown', function (event) {
          break;
       default:
          if (document.querySelectorAll('.keyboard__keys_upperCase').length === 0) {
-            input.innerHTML += document.querySelector('.keyboard__keys[data="' + event.which + '"]').innerHTML;
+            input.innerHTML += document.querySelector(`.keyboard__keys[data='${event.which}']`).innerHTML;
          }
          else {
-            input.innerHTML += (document.querySelector('.keyboard__keys[data="' + event.which + '"]').innerHTML).toUpperCase();
+            input.innerHTML += (document.querySelector(`.keyboard__keys[data='${event.which}']`).innerHTML).toUpperCase();
          }
    }
 });
@@ -251,7 +245,6 @@ document.addEventListener('keyup', function toDeactive(event) {
       return;
    }
    else if (event.key == 'Shift') {
-      //       changeFirstRow();
       shiftLeft.classList.remove('keyboard__keys_active');
       shiftRight.classList.remove('keyboard__keys_active');
       keyboardKeysRegular.forEach(key =>
@@ -263,7 +256,6 @@ document.addEventListener('keyup', function toDeactive(event) {
       )
    }
 });
-// });
 
 /* функция создания клавиатуры */
 
@@ -302,7 +294,7 @@ function init(keyboardCodes) {
 }
 
 function addKeyboardKeys(row, i, codes) {
-   row.innerHTML += '<div data = "' + keyboardWhich[i] + '" >' + String.fromCharCode(codes[i]) + '</div > ';
+   row.innerHTML += `<div data='${keyboardWhich[i]}'> ${String.fromCharCode(codes[i])}</div>`;
 }
 
 function changeKeyboardKeys(elem, codes, i) {
@@ -334,9 +326,7 @@ function toActive(elem) {
    if (elem == shiftLeft || elem == shiftRight || elem == capsLk || elem == ctrlLeft) {
       return;
    }
-   else {
-      elem.classList.add('keyboard__keys_active');
-   }
+   elem.classList.add('keyboard__keys_active');
 }
 
 function toActiveCapsOrShift(elem) {
@@ -369,23 +359,21 @@ function toDeactiveByPress(elem) {
    }
 }
 
-function getCaret(el) {
-   if (el.selectionStart) {
-      return el.selectionStart;
-   } else if (document.selection) {
-      el.focus();
-
-      let r = document.selection.createRange();
-      if (r == null) {
+function getCaret(element) {
+   if (element.selectionStart) {
+      return element.selectionStart;
+   }
+   else if (document.selection) {
+      element.focus();
+      let range = document.selection.createRange();
+      if (range == null) {
          return 0;
       }
-
-      let re = el.createTextRange(),
-         rc = re.duplicate();
-      re.moveToBookmark(r.getBookmark());
-      rc.setEndPoint('EndToStart', re);
-
-      return rc.text.length;
+      let textRange = element.createTextRange(),
+         clonedTextRange = textRange.duplicate();
+      textRange.moveToBookmark(range.getBookmark());
+      clonedTextRange.setEndPoint('EndToStart', textRange);
+      return clonedTextRange.text.length;
    }
    return 0;
 }
@@ -394,7 +382,8 @@ function resetCursor(txtElement, currentPos) {
    if (txtElement.setSelectionRange) {
       txtElement.focus();
       txtElement.setSelectionRange(currentPos, currentPos);
-   } else if (txtElement.createTextRange) {
+   }
+   else if (txtElement.createTextRange) {
       let range = txtElement.createTextRange();
       range.moveStart('character', currentPos);
       range.select();
@@ -405,11 +394,8 @@ function toBackspace() {
    let textarea = document.querySelector('.input');
    let currentPos = getCaret(textarea);
    let text = textarea.value;
-
    let backSpace = text.substr(0, currentPos - 1) + text.substr(currentPos, text.length);
-
    textarea.value = backSpace;
-
    resetCursor(textarea, currentPos - 1);
 }
 
@@ -421,28 +407,24 @@ function toDelete(input, cursorPos) {
 
 /* функция переключения языка */
 
-function checkActiveKeys(a, b) {
-   if (a.classList.contains('keyboard__keys_active') && b.classList.contains('keyboard__keys_active')) {
+function checkActiveKeys(elem1, elem2) {
+   if (elem1.classList.contains('keyboard__keys_active') && elem2.classList.contains('keyboard__keys_active')) {
       keyboardKeysRegular.forEach(key =>
          key.classList.remove('keyboard__keys_active', 'keyboard__keys_upperCase'));
-
       if (keyboardKeysRegular[0].innerHTML == '`') {
          for (let i = 0; i < keyboardKeysRegular.length; i++) {
             changeKeyboardKeys(keyboardKeysRegular[i], keyboardCodesRus, i);
          }
          document.cookie = "language=rus";
-         console.log(document.cookie);
       }
       else {
          for (let i = 0; i < keyboardKeysRegular.length; i++) {
             changeKeyboardKeys(keyboardKeysRegular[i], keyboardCodesEng, i);
-            document.cookie = 'language=eng';
-            console.log(document.cookie);
          }
+         document.cookie = 'language=eng';
       }
       shiftLeft.classList.remove('keyboard__keys_active');
       capsLk.classList.remove('keyboard__keys_active');
-
    }
 }
 
